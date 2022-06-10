@@ -37,7 +37,8 @@ enum ChangeNumberMode {
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define VOLUME_LIGHT_FILTERING_SAMPLE_NUM 128
+#define ADC_DELAY 1
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -55,6 +56,16 @@ double numRadian = 0;
 double cubeRoot = 0;
 
 enum ChangeNumberMode mode = INCREASE;
+
+uint_fast32_t volumeRawValue, lightRawValue;
+uint_fast32_t light = 0, volume = 0;
+uint_fast32_t normalLight, normalVolume;
+uint_fast32_t volumeSamplingSum = 25 * VOLUME_LIGHT_FILTERING_SAMPLE_NUM,
+		lightSamplingSum = 30 * VOLUME_LIGHT_FILTERING_SAMPLE_NUM;
+uint_fast32_t lightSamplingIdx = 0, volumeSamplingIdx = 0;
+
+uint_fast16_t volumeSamplingArr[VOLUME_LIGHT_FILTERING_SAMPLE_NUM];
+uint_fast16_t lightSamplingArr[VOLUME_LIGHT_FILTERING_SAMPLE_NUM];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -338,6 +349,43 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+	if (hadc->Instance == ADC1) { // volume
+		volumeRawValue = HAL_ADC_GetValue(hadc);
+
+		normalVolume = (float) (volumeRawValue / 40);	// simplified of (x - 0) * 100 / (4000 - 0);
+
+		volumeSamplingSum += normalVolume - volumeSamplingArr[volumeSamplingIdx];
+
+		volumeSamplingArr[volumeSamplingIdx] = normalVolume;
+
+		volume = volumeSamplingSum >> 7;
+		volume = volume > 100 ? 100 : volume;
+
+		volumeSamplingIdx = (volumeSamplingIdx + 1) % VOLUME_LIGHT_FILTERING_SAMPLE_NUM;
+
+		HAL_ADC_Start_IT(&hadc2);
+
+	} else if (hadc->Instance == ADC2) { // light
+
+		lightRawValue = HAL_ADC_GetValue(hadc);
+
+		normalLight = (float) (lightRawValue / 5);	// simplified of (x - 0) * 100 / (600 - 0)
+
+		lightSamplingSum += normalLight - lightSamplingArr[lightSamplingIdx];
+
+		lightSamplingArr[lightSamplingIdx] = normalLight;
+
+		light = lightSamplingSum >> 7;
+		light = light > 100 ? 100 : light;
+
+		lightSamplingIdx = (lightSamplingIdx + 1) % VOLUME_LIGHT_FILTERING_SAMPLE_NUM;
+
+		HAL_ADC_Start_IT(&hadc1);
+	}
+	HAL_Delay(ADC_DELAY);
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	// TODO Set a appropriate timer
 	if (htim->Instance == TIMX) {
