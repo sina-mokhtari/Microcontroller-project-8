@@ -21,12 +21,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+enum ChangeNumberMode {
+	INCREASE, DECREASE
+};
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -46,7 +48,13 @@ SPI_HandleTypeDef hspi1;
 PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
+int num = 0;
+double sinNum = 0;
+double cosNum = 1;
+double numRadian = 0;
+double cubeRoot = 0;
 
+enum ChangeNumberMode mode = INCREASE;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,7 +64,11 @@ static void MX_I2C1_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USB_PCD_Init(void);
 /* USER CODE BEGIN PFP */
-
+void changeNum();
+double convertToRadian(double n);
+void calculateSin();
+void calculateCos();
+void calculateCubeRoot();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -326,6 +338,44 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	// TODO Set a appropriate timer
+	if (htim->Instance == TIMX) {
+		changeNum();
+	}
+}
+
+void changeNum() {
+	if(mode == INCREASE) {
+		num++;
+		if (num == 360)
+			mode = DECREASE;
+	}
+	else {
+		num--;
+		if (num == -360)
+			mode = INCREASE;
+	}
+
+	numRadian = convertToRadian(num);
+	calculateSin();
+	calculateCos();
+	calculateCubeRoot();
+}
+
+double convertToRadian(double n) {
+	return n * PI / 180;
+}
+
+void calculateSin() {
+	sinNum = sin(numRadian);
+}
+void calculateCos() {
+	cosNum = cos(numRadian);
+}
+void calculateCubeRoot() {
+	cubeRoot = pow(num, (1/3));
+}
 
 /* USER CODE END 4 */
 
