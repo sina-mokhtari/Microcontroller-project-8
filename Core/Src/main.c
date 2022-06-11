@@ -561,14 +561,16 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	if (hadc->Instance == ADC1) { // volume
 
 		handleVolume(hadc);
-
-		HAL_ADC_Start_IT(&hadc2);
+//		sprintf(str, "%d\n", 1);
+//		HAL_UART_Transmit(&huart2, str, strlen(str), HAL_MAX_DELAY);
+		HAL_ADC_Start_IT(&hadc1);
 
 	} else if (hadc->Instance == ADC2) { // light
 
 		handleLight(hadc);
-
-		HAL_ADC_Start_IT(&hadc1);
+//		sprintf(str, "%d\n", 2);
+//		HAL_UART_Transmit(&huart2, str, strlen(str), HAL_MAX_DELAY);
+		HAL_ADC_Start_IT(&hadc2);
 	}
 }
 
