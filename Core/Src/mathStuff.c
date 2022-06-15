@@ -30,9 +30,9 @@ double degreeToRadian(double n) {
 	return n * M_PI / 180;
 }
 
-double power(double x, double p) {
-	if (x >= 0)
-		return pow(x, p);
+double power(double n, double p) {
+	if (n >= 0)
+		return pow(n, p);
 	else
-		return -pow(-x, p);
+		return -pow(-n, p);
 }

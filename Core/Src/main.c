@@ -22,10 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "globals.h"
 #include "init.h"
 #include "keypad.h"
 #include "mathStuff.h"
@@ -561,15 +558,13 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 	if (hadc->Instance == ADC1) { // volume
 
 		handleVolume(hadc);
-//		sprintf(str, "%d\n", 1);
-//		HAL_UART_Transmit(&huart2, str, strlen(str), HAL_MAX_DELAY);
+
 		HAL_ADC_Start_IT(&hadc1);
 
 	} else if (hadc->Instance == ADC2) { // light
 
 		handleLight(hadc);
-//		sprintf(str, "%d\n", 2);
-//		HAL_UART_Transmit(&huart2, str, strlen(str), HAL_MAX_DELAY);
+
 		HAL_ADC_Start_IT(&hadc2);
 	}
 }
@@ -577,7 +572,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim->Instance == TIM6) {
 		xChange();
-
 	}
 }
 

@@ -6,9 +6,11 @@
  */
 
 #include "requisite.h"
+#include "adcStuff.h"
 #include "keypad.h"
 
 void init() {
+    adcInit();
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_ADC_Start_IT(&hadc1);
 	HAL_ADC_Start_IT(&hadc2);

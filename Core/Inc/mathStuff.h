@@ -12,6 +12,6 @@
 
 void xChange();
 double degreeToRadian(double n);
-double power(double x, double p);
+double power(double n, double p);
 
 #endif /* INC_MATHSTUFF_H_ */

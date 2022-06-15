@@ -14,10 +14,10 @@ const uint16_t Column_pins[] = { GPIO_PIN_4, GPIO_PIN_5, GPIO_PIN_6, GPIO_PIN_7 
 uint32_t last_gpio_exti;
 
 void handleKeypad(uint16_t GPIO_Pin) {
-	int8_t row_number = -1;
-	int8_t column_number = -1;
+	int row_number = -1;
+	int column_number = -1;
 
-	for (uint8_t row = 0; row < 4; row++) // Loop through Rows
+	for (int row = 0; row < 4; row++) // Loop through Rows
 			{
 		if (GPIO_Pin == Row_pins[row]) {
 			row_number = row;
@@ -27,7 +27,7 @@ void handleKeypad(uint16_t GPIO_Pin) {
 	for (int i = 0; i < 4; i++)
 		HAL_GPIO_WritePin(Column_ports[i], Column_pins[i], GPIO_PIN_RESET);
 
-	for (uint8_t col = 0; col < 4; col++) // Loop through Columns
+	for (int col = 0; col < 4; col++) // Loop through Columns
 			{
 		HAL_GPIO_WritePin(Column_ports[col], Column_pins[col], 1);
 		if (HAL_GPIO_ReadPin(Row_ports[row_number], Row_pins[row_number])) {

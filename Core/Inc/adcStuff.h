@@ -15,5 +15,6 @@
 
 void handleVolume(ADC_HandleTypeDef *hadc);
 void handleLight(ADC_HandleTypeDef *hadc);
+void adcInit();
 
 #endif /* INC_ADCSTUFF_H_ */
